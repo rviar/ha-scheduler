@@ -1,0 +1,38 @@
+set_schedule:
+  name: Set Schedule
+  description: Set operating mode for a specific hour
+  fields:
+    hour:
+      name: Hour
+      description: Hour in format YYYY-MM-DDTHH:00:00
+      required: true
+      example: "2024-01-15T14:00:00"
+      selector:
+        text:
+    mode:
+      name: Mode
+      description: Operating mode
+      required: true
+      example: "Buy"
+      selector:
+        select:
+          options:
+            - "Default"
+            - "Buy"
+            - "Sell"
+            - "Sell (All)"
+            - "Sell (PV Only)"
+            - "Buy (Charge car)"
+            - "Buy (Charge car and charge battery)"
+
+clear_schedule:
+  name: Clear Schedule
+  description: Clear operating mode for a specific hour
+  fields:
+    hour:
+      name: Hour
+      description: Hour in format YYYY-MM-DDTHH:00:00
+      required: true
+      example: "2024-01-15T14:00:00"
+      selector:
+        text:

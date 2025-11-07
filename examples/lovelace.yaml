@@ -1,0 +1,96 @@
+# Example Lovelace configuration for Pstryk Energy Scheduler
+# Add this to your Lovelace dashboard
+
+# First, add the custom card resource to your Lovelace resources
+# Go to Settings -> Dashboards -> Resources -> Add Resource
+# URL: /local/custom_components/pstryk_scheduler/www/pstryk-scheduler-card.js
+# Resource type: JavaScript Module
+
+# Or add this to your configuration.yaml:
+# lovelace:
+#   mode: yaml
+#   resources:
+#     - url: /local/custom_components/pstryk_scheduler/www/pstryk-scheduler-card.js
+#       type: module
+
+# Example dashboard card configuration:
+views:
+  - title: Energy Management
+    path: energy
+    cards:
+      # Main Pstryk Scheduler Card
+      - type: custom:pstryk-scheduler-card
+        entity: sensor.pstryk_scheduler_price_data
+        schedule_entity: sensor.pstryk_scheduler_schedule
+        title: "Pstryk Energy Scheduler"
+
+      # Additional sensor cards
+      - type: entities
+        title: "Current Status"
+        entities:
+          - entity: sensor.pstryk_scheduler_current_mode
+            name: "Current Mode"
+          - entity: sensor.pstryk_scheduler_current_price
+            name: "Current Price"
+          - entity: sensor.pstryk_scheduler_next_price
+            name: "Next Hour Price"
+          - entity: sensor.pstryk_scheduler_average_price
+            name: "Average Price"
+          - entity: sensor.pstryk_scheduler_min_price
+            name: "Minimum Price"
+          - entity: sensor.pstryk_scheduler_max_price
+            name: "Maximum Price"
+
+      # Statistics card
+      - type: statistics-graph
+        title: "Price Statistics"
+        entities:
+          - sensor.pstryk_scheduler_current_price
+        days_to_show: 7
+        stat_types:
+          - mean
+          - min
+          - max
+
+      # Service call buttons for testing
+      - type: horizontal-stack
+        cards:
+          - type: button
+            name: "Set Buy Mode (Current Hour)"
+            tap_action:
+              action: call-service
+              service: pstryk_scheduler.set_schedule
+              service_data:
+                hour: "{{ now().strftime('%Y-%m-%dT%H:00:00') }}"
+                mode: "Buy"
+            icon: mdi:shopping
+          - type: button
+            name: "Set Sell Mode (Current Hour)"
+            tap_action:
+              action: call-service
+              service: pstryk_scheduler.set_schedule
+              service_data:
+                hour: "{{ now().strftime('%Y-%m-%dT%H:00:00') }}"
+                mode: "Sell"
+            icon: mdi:sale
+          - type: button
+            name: "Clear Schedule (Current Hour)"
+            tap_action:
+              action: call-service
+              service: pstryk_scheduler.clear_schedule
+              service_data:
+                hour: "{{ now().strftime('%Y-%m-%dT%H:00:00') }}"
+            icon: mdi:delete
+
+# Alternative: Simple glance card for quick overview
+      - type: glance
+        title: "Quick Overview"
+        entities:
+          - entity: sensor.pstryk_scheduler_current_mode
+            name: "Mode"
+          - entity: sensor.pstryk_scheduler_current_price
+            name: "Current"
+          - entity: sensor.pstryk_scheduler_next_price
+            name: "Next"
+          - entity: sensor.pstryk_scheduler_average_price
+            name: "Average"

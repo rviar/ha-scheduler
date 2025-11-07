@@ -1,0 +1,189 @@
+# Example automations for Pstryk Energy Scheduler
+# Add these to your Home Assistant configuration.yaml or automations.yaml
+
+# Automation to execute actions when the hour changes and a schedule is set
+automation:
+  - alias: "Pstryk Scheduler - Execute Scheduled Mode"
+    description: "Execute the scheduled mode when a new hour begins"
+    trigger:
+      - platform: time_pattern
+        minutes: 0
+    condition: []
+    action:
+      - service: script.pstryk_execute_current_mode
+        data: {}
+
+# Script to execute the current mode
+script:
+  pstryk_execute_current_mode:
+    alias: "Execute Current Pstryk Mode"
+    sequence:
+      - variables:
+          current_mode: "{{ states('sensor.pstryk_scheduler_current_mode') }}"
+      - choose:
+          # Default Mode
+          - conditions:
+              - condition: template
+                value_template: "{{ current_mode == 'Default' }}"
+            sequence:
+              - service: script.pstryk_mode_default
+                data: {}
+
+          # Buy Mode
+          - conditions:
+              - condition: template
+                value_template: "{{ current_mode == 'Buy' }}"
+            sequence:
+              - service: script.pstryk_mode_buy
+                data: {}
+
+          # Sell Mode
+          - conditions:
+              - condition: template
+                value_template: "{{ current_mode == 'Sell' }}"
+            sequence:
+              - service: script.pstryk_mode_sell
+                data: {}
+
+          # Sell (All) Mode
+          - conditions:
+              - condition: template
+                value_template: "{{ current_mode == 'Sell (All)' }}"
+            sequence:
+              - service: script.pstryk_mode_sell_all
+                data: {}
+
+          # Sell (PV Only) Mode
+          - conditions:
+              - condition: template
+                value_template: "{{ current_mode == 'Sell (PV Only)' }}"
+            sequence:
+              - service: script.pstryk_mode_sell_pv_only
+                data: {}
+
+          # Buy (Charge car) Mode
+          - conditions:
+              - condition: template
+                value_template: "{{ current_mode == 'Buy (Charge car)' }}"
+            sequence:
+              - service: script.pstryk_mode_buy_charge_car
+                data: {}
+
+          # Buy (Charge car and charge battery) Mode
+          - conditions:
+              - condition: template
+                value_template: "{{ current_mode == 'Buy (Charge car and charge battery)' }}"
+            sequence:
+              - service: script.pstryk_mode_buy_charge_car_and_battery
+                data: {}
+
+  # Define your mode scripts here
+  pstryk_mode_default:
+    alias: "Pstryk Mode: Default"
+    sequence:
+      - service: notify.persistent_notification
+        data:
+          message: "Default mode activated"
+          title: "Pstryk Scheduler"
+      # Add your custom actions here
+      # Example:
+      # - service: switch.turn_off
+      #   target:
+      #     entity_id: switch.battery_charging
+
+  pstryk_mode_buy:
+    alias: "Pstryk Mode: Buy"
+    sequence:
+      - service: notify.persistent_notification
+        data:
+          message: "Buy mode activated - purchasing energy from grid"
+          title: "Pstryk Scheduler"
+      # Add your custom actions here
+      # Example:
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.grid_import
+
+  pstryk_mode_sell:
+    alias: "Pstryk Mode: Sell"
+    sequence:
+      - service: notify.persistent_notification
+        data:
+          message: "Sell mode activated - selling energy to grid"
+          title: "Pstryk Scheduler"
+      # Add your custom actions here
+      # Example:
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.grid_export
+
+  pstryk_mode_sell_all:
+    alias: "Pstryk Mode: Sell (All)"
+    sequence:
+      - service: notify.persistent_notification
+        data:
+          message: "Sell All mode activated - selling all available energy"
+          title: "Pstryk Scheduler"
+      # Add your custom actions here
+      # Example:
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.battery_discharge
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.grid_export
+
+  pstryk_mode_sell_pv_only:
+    alias: "Pstryk Mode: Sell (PV Only)"
+    sequence:
+      - service: notify.persistent_notification
+        data:
+          message: "Sell PV Only mode activated - selling only solar energy"
+          title: "Pstryk Scheduler"
+      # Add your custom actions here
+      # Example:
+      # - service: switch.turn_off
+      #   target:
+      #     entity_id: switch.battery_discharge
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.solar_export
+
+  pstryk_mode_buy_charge_car:
+    alias: "Pstryk Mode: Buy (Charge car)"
+    sequence:
+      - service: notify.persistent_notification
+        data:
+          message: "Buy & Charge Car mode activated"
+          title: "Pstryk Scheduler"
+      # Add your custom actions here
+      # Example:
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.car_charger
+      # - service: number.set_value
+      #   target:
+      #     entity_id: number.car_charge_limit
+      #   data:
+      #     value: 80
+
+  pstryk_mode_buy_charge_car_and_battery:
+    alias: "Pstryk Mode: Buy (Charge car and charge battery)"
+    sequence:
+      - service: notify.persistent_notification
+        data:
+          message: "Buy & Charge Car + Battery mode activated"
+          title: "Pstryk Scheduler"
+      # Add your custom actions here
+      # Example:
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.car_charger
+      # - service: switch.turn_on
+      #   target:
+      #     entity_id: switch.battery_charging
+      # - service: number.set_value
+      #   target:
+      #     entity_id: number.battery_charge_limit
+      #   data:
+      #     value: 100

@@ -1,0 +1,46 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Pstryk Energy Scheduler",
+        "description": "Enter your Pstryk API key",
+        "data": {
+          "api_key": "API Key"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to Pstryk API. Please check your API key.",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "This integration is already configured"
+    }
+  },
+  "services": {
+    "set_schedule": {
+      "name": "Set Schedule",
+      "description": "Set operating mode for a specific hour",
+      "fields": {
+        "hour": {
+          "name": "Hour",
+          "description": "Hour in format YYYY-MM-DDTHH:00:00"
+        },
+        "mode": {
+          "name": "Mode",
+          "description": "Operating mode (Default, Buy, Sell, etc.)"
+        }
+      }
+    },
+    "clear_schedule": {
+      "name": "Clear Schedule",
+      "description": "Clear operating mode for a specific hour",
+      "fields": {
+        "hour": {
+          "name": "Hour",
+          "description": "Hour in format YYYY-MM-DDTHH:00:00"
+        }
+      }
+    }
+  }
+}

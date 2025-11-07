@@ -1,0 +1,13 @@
+{
+  "domain": "pstryk_scheduler",
+  "name": "Pstryk Energy Scheduler",
+  "version": "1.0.0",
+  "documentation": "https://github.com/rviar/ha-scheduler",
+  "issue_tracker": "https://github.com/rviar/ha-scheduler/issues",
+  "requirements": ["aiohttp>=3.8.0"],
+  "codeowners": ["@rviar"],
+  "config_flow": true,
+  "iot_class": "cloud_polling",
+  "dependencies": [],
+  "after_dependencies": []
+}
